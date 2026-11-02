@@ -298,6 +298,13 @@ window.__ModuleLoader__.load({
     <label class="chk"><input type="checkbox" data-f="auto" checked> 自动按文本选情绪</label>
     <select data-f="emo"></select>
 
+    <div class="sec">引擎（IndexTTS）</div>
+    <input type="text" class="txt" data-f="endpoint" placeholder="服务地址 http://127.0.0.1:7860">
+    <input type="text" class="txt" data-f="projectdir" placeholder="项目目录（装了 IndexTTS 的那个）">
+    <input type="text" class="txt" data-f="pythonpath" placeholder="Python 路径（可选）">
+    <input type="text" class="txt" data-f="batpath" placeholder="启动脚本（可选，能弹出 CMD 窗口）">
+    <div class="hint" data-f="enghint"></div>
+
     <div class="btns">
       <button data-f="say">说一句</button>
       <button data-f="start">启动服务</button>
@@ -353,6 +360,12 @@ window.__ModuleLoader__.load({
   const impImgBtn = $('[data-f="impimg"]')
   const fileVoiceEl = $('[data-f="filevoice"]')
   const fileImgEl = $('[data-f="fileimg"]')
+  // 引擎配置
+  const epEl = $('[data-f="endpoint"]')
+  const pdEl = $('[data-f="projectdir"]')
+  const pyEl = $('[data-f="pythonpath"]')
+  const btEl = $('[data-f="batpath"]')
+  const engHintEl = $('[data-f="enghint"]')
 
   const S = {
     enabled: false, current: '', characters: [], emotions: [], service: false,
@@ -617,6 +630,13 @@ window.__ModuleLoader__.load({
       autoEl.checked = S.autoEmotion
       hideCmdEl.checked = !!j.hideCmdWindow
 
+      // 引擎配置：正在编辑的输入框不要被轮询覆盖掉
+      for (const [el, v] of [[epEl, j.endpoint], [pdEl, j.projectDir], [pyEl, j.pythonPath], [btEl, j.batPath]]) {
+        if (shadow.activeElement !== el) el.value = v || ''
+      }
+      // 没连上时把「到底缺什么」直接写在面板上，别只丢进日志
+      engHintEl.textContent = (j.engine && !j.engine.alive) ? (j.engine.hint || '') : ''
+
       if (changed) { renderChars(); renderEmotions(); applyAvatar() }
       else { if (!emoSel.options.length) renderEmotions() }
       updatePet()
@@ -780,6 +800,16 @@ window.__ModuleLoader__.load({
     if (f) importFile('avatar', f)
     fileImgEl.value = ''
   })
+
+  // 引擎配置改完立刻落盘，然后重新探一次
+  for (const [el, key] of [[epEl, 'endpoint'], [pdEl, 'projectDir'], [pyEl, 'pythonPath'], [btEl, 'batPath']]) {
+    el.addEventListener('change', () => {
+      fetch(`${ROUTE}/config`, {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ [key]: el.value.trim() }),
+      }).then(() => setTimeout(refresh, 300)).catch(() => {})
+    })
+  }
 
   sayBtn.addEventListener('click', async () => {
     sayBtn.disabled = true

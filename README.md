@@ -40,13 +40,66 @@ dsh plugin add dsh-littlestar-anything-voice
 
 ## 准备引擎（一次性）
 
-本插件不绑死某个引擎，但默认按 **IndexTTS 2.5** 的接口跑。
+本插件**不自带**语音合成引擎 —— 它只是个传话的。真正发声的是 **bilibili 的 IndexTTS 2.5**，得你自己装。
 
-1. 装好 IndexTTS 2.5（本地 WebUI 默认跑在 `http://127.0.0.1:7860`）
-2. 面板里把 `endpoint` 指过去
-3. 需要时手动填 `pythonPath`（跑合成脚本的 Python）和 `batPath`（拉起 WebUI 的批处理）
+> ⚠️ **没装引擎会怎样**：挂件照常出现，角色也能加、能选，但**点开关不会有声音**。面板上会写清缺的是什么。
 
-面板上的「启动服务」会用**可见的 CMD 窗口**把 WebUI 拉起来 —— 有窗口在就说明程序在跑。
+### 先看硬件够不够
+
+- **NVIDIA 显卡**，推理约需 **6 GB 显存**（8 GB 卡能用但比较紧，别同时跑别的模型）
+- **Python 3.10–3.11**
+- 模型权重约几个 GB，第一次下载要等
+
+### 装
+
+> 核心团队维护的**唯一官方渠道**是 [github.com/index-tts/index-tts](https://github.com/index-tts/index-tts)。
+> 其他网站、网盘、二改包都不是官方提供的，安全性和正确性没有保证。下面步骤以官方 README 为准，版本更新了先去仓库看一眼。
+
+```bash
+git clone https://github.com/index-tts/index-tts.git
+cd index-tts
+
+# 装 uv（官方用这个管环境）
+pip install -U uv
+uv sync --all-extras
+```
+
+**下载权重**（国内推荐走 ModelScope，HuggingFace 经常连不上）：
+
+```bash
+# 方式一：HuggingFace
+uv tool install "huggingface-hub[cli,hf_xet]"
+hf download IndexTeam/IndexTTS-2.5 --local-dir=checkpoints
+
+# 方式二：ModelScope（国内快）
+uv tool install "modelscope"
+modelscope download --model IndexTeam/IndexTTS-2.5 --local_dir checkpoints
+```
+
+**跑起来**（确认能开网页界面）：
+
+```bash
+uv run webui.py --model_dir ./checkpoints --version 2.5
+```
+
+默认地址 `http://127.0.0.1:7860`，浏览器打开能看到界面就说明成了。
+
+### 告诉插件这些路径
+
+右键立绘 → 设置面板 →「**引擎（IndexTTS）**」那一节，四栏：
+
+| 栏位 | 填什么 |
+|---|---|
+| 服务地址 | `http://127.0.0.1:7860`（改过端口就跟着改） |
+| 项目目录 | `git clone` 下来的那个文件夹 |
+| Python 路径 | 一般在你项目目录下的 `.venv\Scripts\python.exe`（可选） |
+| 启动脚本 | 你自己写的 `.bat`，可以不填（可选） |
+
+填完点一下「启动服务」。有**可见的 CMD 窗口**弹出来、模型加载完，面板上的「本地服务」就会变成「在线」。
+
+### 装不上怎么办
+
+插件**不强制**要它自带的启动能力。只要 IndexTTS 的 WebUI 开着、端口能通，插件就能用 —— 你自己手动双击启动脚本也一样。
 
 ---
 
@@ -152,8 +205,11 @@ dsh plugin add dsh-littlestar-anything-voice
 
 ## 常见问题
 
+**Q：装完插件什么都没配，能用吗？**
+挂件、加角色、切角色都能用；**发声不能** —— 没有引擎就合成不了。面板「引擎（IndexTTS）」那节底下会直接写清缺什么，不用去翻日志。
+
 **Q：点了没声音？**
-先看面板上的「本地服务」是不是「在线」。没在线就点「启动服务」，等那个 CMD 窗口把模型加载完（第一次要几十秒）。
+先看面板上的「本地服务」是不是「在线」。没在线就点「启动服务」，等那个 CMD 窗口把模型加载完（第一次要几十秒）。下面那行提示会告诉你具体卡在哪。
 
 **Q：念出来是别人的声音 / 音色不像？**
 参考音频的问题。换成 5~15 秒的干净人声重试；带 BGM 或者只有 2 秒的片段，克隆出来一定不像。

@@ -1,0 +1,38 @@
+{
+  "name": "dsh-littlestar-anything-voice",
+  "version": "1.10.8",
+  "private": true,
+  "description": "小星辰任意语音：Q 版立绘挂件 + 本地 IndexTTS 声音克隆，一个角色一段参考音频，点一下就念 / 再点就闭嘴",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json",
+    "./client": "./client.js"
+  },
+  "files": [
+    "lib/",
+    "client.js",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "manifestVersion": 1,
+    "client": {
+      "platform": "web",
+      "inject": []
+    }
+  },
+  "engines": {
+    "dsh": ">=0.1.7-rc.1 <0.3.0-0"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/schemastery": "*"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,9 @@
+# dsh-littlestar-anything-voice — bundle patch
+#
+# 把插件插入当前 profile 的配置树。
+# 本地开发安装：
+#   dsh plugin --profile desktop add link:<此目录>
+
+- insert:
+    - id: littlestar-voice
+      name: dsh-littlestar-anything-voice

@@ -1,7 +1,68 @@
 # dsh-littlestar-anything-voice · 任意语音
 
-> **当前版本：v1.10.8**
->
+本插件由辰启星明与链接·1代小星辰共同制作，基于indexTTS2.5运行，可以给大肥鱼生成的文本配音，想换什么音色，只需要自己去录六到十秒的音频，然后放入voices文件夹，点击添加后选择自动添加即可。
+
+---
+
+## 还没有 IndexTTS 2.5？
+
+**噢我的天呐老弟，你也太小白了吧？**（笑）
+
+先说清楚：这个插件只是个"传话的"，真正发声的是 bilibili 的 **IndexTTS 2.5** —— 得先在你自己电脑上把它装好，插件才念得出来。不装的话挂件照常出现、角色也能加，但**点开关没有声音**。
+
+### ① 自己动手：点下面这个链接
+
+👉 **[https://github.com/index-tts/index-tts](https://github.com/index-tts/index-tts)**
+
+> 这是核心团队维护的**唯一官方渠道**。其他网站、网盘、二改包都不是官方提供的，安全性和正确性没有保证。
+
+硬要求先看一眼，不够就别硬上：**NVIDIA 显卡 + 约 6 GB 空闲显存**、**Python 3.10 或 3.11**、模型权重好几个 G。
+
+### ② 或者：把下面这一整段复制，直接扔给你的 AI 助手
+
+让它替你装，你只需要在最后把几个路径抄回插件面板：
+
+```text
+帮我在这台 Windows 电脑上装好 IndexTTS 2.5 的本地语音合成服务，装完我要填进一个 DSH 插件的配置里。请按顺序做，每步先确认再往下：
+
+1. 环境检查：确认已经装了 git 和 Python 3.10 或 3.11；确认显卡是 NVIDIA、有至少 6 GB 空闲显存。缺什么先告诉我，不要擅自装驱动。
+
+2. 挑一个剩余空间 20 GB 以上的盘建目录，然后依次执行：
+   git clone https://github.com/index-tts/index-tts.git
+   cd index-tts
+   pip install -U uv
+   uv sync --all-extras
+
+3. 下载模型权重到项目目录下的 checkpoints（国内优先走 ModelScope，HuggingFace 直连经常超时）：
+   uv tool install modelscope
+   modelscope download --model IndexTeam/IndexTTS-2.5 --local_dir checkpoints
+   如果 ModelScope 也不行，换 HuggingFace：
+   uv tool install "huggingface-hub[cli,hf_xet]"
+   hf download IndexTeam/IndexTTS-2.5 --local-dir=checkpoints
+
+4. 试跑，确认能开界面：
+   uv run webui.py --model_dir ./checkpoints --version 2.5
+   浏览器打开 http://127.0.0.1:7860 能看到界面就算成功。
+
+5. 最后报给我这四个值（我要填进插件）：
+   - 项目目录：git clone 出来那个文件夹的绝对路径
+   - Python 路径：一般是 <项目目录>\.venv\Scripts\python.exe
+   - 启动脚本：帮我写一个能双击启动 WebUI 的 .bat，告诉我它的绝对路径
+   - 服务地址：默认 http://127.0.0.1:7860
+
+注意事项：
+- 下载模型有好几个 G，请开一个可见的窗口跑，我要看到进度。
+- 那个 .bat 里面不要写任何中文，包括注释。cmd 按系统编码逐行解析脚本，UTF-8 中文会把字节流撕开，报"不是内部或外部命令"。
+- 别动我电脑上已有的 Python 环境和显卡驱动，尽量用 uv 隔离。
+- 装的过程中如果某一步失败，先告诉我是哪一步、报的什么错，别自己换方案重来。
+```
+
+装完之后，把 AI 报给你的路径填进插件的「**引擎（IndexTTS）**」面板 —— 服务地址、项目目录、Python、启动脚本，四栏一填，点「启动服务」就通了。
+
+---
+
+> **当前版本：v1.11.8**
+> 
 > **更新内容（首个公开版本）**
 >
 > - 角色库改成**平铺结构**：`voices/` 放音色、`avatars/` 放立绘，**同名即配对**
@@ -10,6 +71,9 @@
 > - 「**太长不读**」：本轮回答超过设定字数就整条不念（0 = 不限）
 > - 设置面板会按立绘位置**自动向上/向下展开**，不会顶出屏幕
 > - 状态点贴在立绘右上角；可收起成一枚小圆头像
+> - 设置面板新增「**引擎（IndexTTS）**」一节：服务地址 / 项目目录 / Python / 启动脚本都能在面板里填；连不上时**直接写出缺什么**，不用翻日志
+> - README 补上 IndexTTS 安装指引，以及一段可以直接丢给 AI 助手的安装指令
+> 
 >
 > ⚠️ 本仓库**不包含任何音色和立绘**。角色库在你自己的电脑上，见「加角色」。
 
@@ -38,68 +102,20 @@ dsh plugin add dsh-littlestar-anything-voice
 
 ---
 
-## 准备引擎（一次性）
+## 把路径填进插件
 
-本插件**不自带**语音合成引擎 —— 它只是个传话的。真正发声的是 **bilibili 的 IndexTTS 2.5**，得你自己装。
-
-> ⚠️ **没装引擎会怎样**：挂件照常出现，角色也能加、能选，但**点开关不会有声音**。面板上会写清缺的是什么。
-
-### 先看硬件够不够
-
-- **NVIDIA 显卡**，推理约需 **6 GB 显存**（8 GB 卡能用但比较紧，别同时跑别的模型）
-- **Python 3.10–3.11**
-- 模型权重约几个 GB，第一次下载要等
-
-### 装
-
-> 核心团队维护的**唯一官方渠道**是 [github.com/index-tts/index-tts](https://github.com/index-tts/index-tts)。
-> 其他网站、网盘、二改包都不是官方提供的，安全性和正确性没有保证。下面步骤以官方 README 为准，版本更新了先去仓库看一眼。
-
-```bash
-git clone https://github.com/index-tts/index-tts.git
-cd index-tts
-
-# 装 uv（官方用这个管环境）
-pip install -U uv
-uv sync --all-extras
-```
-
-**下载权重**（国内推荐走 ModelScope，HuggingFace 经常连不上）：
-
-```bash
-# 方式一：HuggingFace
-uv tool install "huggingface-hub[cli,hf_xet]"
-hf download IndexTeam/IndexTTS-2.5 --local-dir=checkpoints
-
-# 方式二：ModelScope（国内快）
-uv tool install "modelscope"
-modelscope download --model IndexTeam/IndexTTS-2.5 --local_dir checkpoints
-```
-
-**跑起来**（确认能开网页界面）：
-
-```bash
-uv run webui.py --model_dir ./checkpoints --version 2.5
-```
-
-默认地址 `http://127.0.0.1:7860`，浏览器打开能看到界面就说明成了。
-
-### 告诉插件这些路径
-
-右键立绘 → 设置面板 →「**引擎（IndexTTS）**」那一节，四栏：
+装好之后（怎么装见上面「还没有 IndexTTS 2.5？」），右键立绘 → 设置面板 →「**引擎（IndexTTS）**」那一节：
 
 | 栏位 | 填什么 |
 |---|---|
 | 服务地址 | `http://127.0.0.1:7860`（改过端口就跟着改） |
 | 项目目录 | `git clone` 下来的那个文件夹 |
-| Python 路径 | 一般在你项目目录下的 `.venv\Scripts\python.exe`（可选） |
-| 启动脚本 | 你自己写的 `.bat`，可以不填（可选） |
+| Python 路径 | 一般是 `<项目目录>\.venv\Scripts\python.exe`（可选） |
+| 启动脚本 | 你自己那个 `.bat`（可选；填了才会弹出可见窗口） |
 
-填完点一下「启动服务」。有**可见的 CMD 窗口**弹出来、模型加载完，面板上的「本地服务」就会变成「在线」。
+填完点「启动服务」。有**可见的 CMD 窗口**弹出来、模型加载完，面板上的「本地服务」就会变成「在线」。
 
-### 装不上怎么办
-
-插件**不强制**要它自带的启动能力。只要 IndexTTS 的 WebUI 开着、端口能通，插件就能用 —— 你自己手动双击启动脚本也一样。
+> 插件不强制要它自己会启动。只要 IndexTTS 的 WebUI 开着、端口能通，手动启动也一样能用。
 
 ---
 
@@ -205,11 +221,8 @@ uv run webui.py --model_dir ./checkpoints --version 2.5
 
 ## 常见问题
 
-**Q：装完插件什么都没配，能用吗？**
-挂件、加角色、切角色都能用；**发声不能** —— 没有引擎就合成不了。面板「引擎（IndexTTS）」那节底下会直接写清缺什么，不用去翻日志。
-
 **Q：点了没声音？**
-先看面板上的「本地服务」是不是「在线」。没在线就点「启动服务」，等那个 CMD 窗口把模型加载完（第一次要几十秒）。下面那行提示会告诉你具体卡在哪。
+先看面板上的「本地服务」是不是「在线」。没在线就点「启动服务」，等那个 CMD 窗口把模型加载完（第一次要几十秒）。
 
 **Q：念出来是别人的声音 / 音色不像？**
 参考音频的问题。换成 5~15 秒的干净人声重试；带 BGM 或者只有 2 秒的片段，克隆出来一定不像。

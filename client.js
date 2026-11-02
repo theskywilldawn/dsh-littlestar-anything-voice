@@ -81,7 +81,7 @@ window.__ModuleLoader__.load({
       gap: 3px; color: #fff; text-align: center; padding: 0 8%;
     }
     .fallback .fb-char { font-size: 34px; line-height: 1; opacity: .94; }
-    /* 没图时的那行小字（哥哥要的「本角色暂无图片，请添加」） */
+    /* 没图时的那行小字 */
     .fallback .fb-tip { font-size: 10px; line-height: 1.3; opacity: .82; letter-spacing: .2px; }
     .pet.off img { filter: grayscale(.85) brightness(.85); }
     .pet.off::after {
@@ -89,10 +89,10 @@ window.__ModuleLoader__.load({
       height: 3px; background: rgba(255,255,255,.85); border-radius: 2px;
       transform: rotate(-28deg); box-shadow: 0 0 5px rgba(0,0,0,.5);
     }
-    /* 服务离线不再画那圈旋转红虚线（哥哥嫌一直转着难看），只靠下面那个红点提示 */
+    /* 服务离线不画旋转红虚线，只靠下面那个红点提示 */
 
     /* ── 收起：缩成一枚圆形角标，点一下再展开 ─────────────────── */
-    /* 常显不靠 hover —— 之前做成悬停才出现，哥哥根本没找到它。
+    /* 常显不靠 hover —— 之前做成悬停才出现，使用者根本没找到它。
        挪到左上角：右上角让给状态点，两个小圆才不会叠在一起。 */
     .collapse {
       position: absolute; left: -6px; top: -6px; z-index: 5;

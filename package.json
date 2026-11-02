@@ -34,5 +34,14 @@
   "peerDependencies": {
     "@deepseek-ai/schemastery": "*"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theskywilldawn/dsh-littlestar-anything-voice.git"
+  },
+  "homepage": "https://github.com/theskywilldawn/dsh-littlestar-anything-voice#readme",
+  "bugs": {
+    "url": "https://github.com/theskywilldawn/dsh-littlestar-anything-voice/issues"
+  },
+  "author": "theskywilldawn",
   "license": "MIT"
 }

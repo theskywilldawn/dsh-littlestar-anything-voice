@@ -15,7 +15,7 @@
 左边是挂件本体：左上角那个小圆钮点一下能把立绘收起来，右上角的小圆点是状态灯（绿＝引擎在线）。
 右边是收起后的样子，一枚小圆头像，点一下再展开。
 
-▶ **[看 60 秒演示视频](docs/demo.mp4)** —— GitHub 页面里直接播放
+▶ **[看 60 秒演示视频](https://github.com/theskywilldawn/dsh-littlestar-anything-voice/releases/download/v1.12.8/demo.mp4)** —— 约 35 MB，放在 Release 附件里（仓库本身不带视频，clone 很快）
 
 ---
 

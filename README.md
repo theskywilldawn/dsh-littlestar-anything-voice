@@ -4,6 +4,21 @@
 
 ---
 
+## 先看效果
+
+<p align="center">
+  <img src="docs/images/widget.jpg" width="250" alt="挂件本体">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/images/widget-collapsed.jpg" width="104" alt="收起后的小圆头像">
+</p>
+
+左边是挂件本体：左上角那个小圆钮点一下能把立绘收起来，右上角的小圆点是状态灯（绿＝引擎在线）。
+右边是收起后的样子，一枚小圆头像，点一下再展开。
+
+▶ **[看 60 秒演示视频](docs/demo.mp4)** —— GitHub 页面里直接播放
+
+---
+
 ## 还没有 IndexTTS 2.5？
 
 **噢我的天呐老弟，你也太小白了吧？**（笑）
@@ -61,7 +76,7 @@
 
 ---
 
-> **当前版本：v1.11.8**
+> **当前版本：v1.12.8**
 > 
 > **更新内容（首个公开版本）**
 >
@@ -73,6 +88,7 @@
 > - 状态点贴在立绘右上角；可收起成一枚小圆头像
 > - 设置面板新增「**引擎（IndexTTS）**」一节：服务地址 / 项目目录 / Python / 启动脚本都能在面板里填；连不上时**直接写出缺什么**，不用翻日志
 > - README 补上 IndexTTS 安装指引，以及一段可以直接丢给 AI 助手的安装指令
+> - README 顶部加了效果截图和 60 秒演示视频
 > 
 >
 > ⚠️ 本仓库**不包含任何音色和立绘**。角色库在你自己的电脑上，见「加角色」。
@@ -207,6 +223,10 @@ dsh plugin add dsh-littlestar-anything-voice
 ---
 
 ## 设置面板
+
+<p align="center">
+  <img src="docs/images/settings-panel.jpg" width="330" alt="设置面板">
+</p>
 
 | 项 | 说明 |
 |---|---|
